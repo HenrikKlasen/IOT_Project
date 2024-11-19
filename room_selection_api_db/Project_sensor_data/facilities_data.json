@@ -1,0 +1,8 @@
+{
+    "facilities": [
+        "videoprojector",
+        "seating_capacity",
+        "computers",
+        "robots_for_training"
+    ]
+}
