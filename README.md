@@ -14,3 +14,5 @@
 ### Workplace criteria
 
 [EU regulations](https://eur-lex.europa.eu/eli/dir/1989/654/)
+
+### ![Image of the system architecture](Plan.jpg)
