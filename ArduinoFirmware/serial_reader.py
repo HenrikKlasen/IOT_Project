@@ -19,4 +19,8 @@ def readserial(comport, baudrate, timestamp=False):
 
 
 if __name__ == '__main__':
+<<<<<<< HEAD
     readserial('COM3', 9600, timestamp=True)
+=======
+    readserial('COM3', 9600, True)
+>>>>>>> 78282fb82aa1c1eddc4b5826c5879cc175054a0f
