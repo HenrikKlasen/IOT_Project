@@ -55,7 +55,6 @@ void loop( )
      true, then a measurement is available. */
   if( measure_environment( &temperature, &humidity) == true )
   {
-    Serial.println(millis());
     Serial.println(temperature);
     Serial.println(humidity);
     

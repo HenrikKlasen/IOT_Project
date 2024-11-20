@@ -1,5 +1,6 @@
 import serial
 import time
+import serial_parser
 
 
 def readserial(comport, baudrate, timestamp=False):
@@ -13,14 +14,8 @@ def readserial(comport, baudrate, timestamp=False):
 
         if temp and humidity and timestamp:
             timestamp = time.strftime('%H:%M:%S')
-            print(f'{timestamp} > Temp: {temp} > Humidity: {humidity}')
-        elif temp and humidity:
-            print(temp, humidity)
+            print(serial_parser.parse_to_json(timestamp=timestamp, roomID=1, temp=temp, humidity=humidity))
 
 
 if __name__ == '__main__':
-<<<<<<< HEAD
     readserial('COM3', 9600, timestamp=True)
-=======
-    readserial('COM3', 9600, True)
->>>>>>> 78282fb82aa1c1eddc4b5826c5879cc175054a0f
