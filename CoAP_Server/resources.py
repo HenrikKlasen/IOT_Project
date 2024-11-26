@@ -35,11 +35,11 @@ class SensorResource(Resource):
 class SimpleResource(Resource):
     def __init__(self, name="SimpleResource", coap_server=None):
         super(SimpleResource, self).__init__(name, coap_server, visible=True, observable=True, allow_children=True)
-        self.payload = "Hello, CoAP!"
+        self.payload = ""
 
     def render_GET(self, request):
         return self
 
     def render_POST(self, request):
-        self.payload = request.payload
+        self = request.payload
         return self
