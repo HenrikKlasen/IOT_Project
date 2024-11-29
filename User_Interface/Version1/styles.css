@@ -1,0 +1,154 @@
+/* styles.css */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f0f2f5;
+}
+
+header {
+  background: #0078d4;
+  color: white;
+  padding: 1em;
+  text-align: center;
+}
+
+.tab-buttons {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.tab-buttons button {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background: #0078d4; 
+  color: white;
+  font-size: 1rem;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.tab-buttons button:hover {
+  background: #005bb5; 
+}
+
+.tab-buttons button.active {
+  background: #333; 
+  color: white; 
+}
+
+.tab-content {
+  display: block;
+}
+
+.tab-content.hidden {
+  display: none;
+}
+
+main {
+  margin: 20px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+}
+
+h2 {
+  margin-top: 0;
+  color: #333;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 5px;
+}
+
+.slider-group {
+  margin-bottom: 20px;
+}
+
+label {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #555;
+}
+
+.slider-container {
+  position: relative;
+  margin-top: 5px;
+}
+
+input[type="range"] {
+  width: 100%;
+  cursor: pointer;
+  accent-color: #0078d4;
+}
+
+.slider-scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 5px;
+}
+
+button {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 20px;
+  background: #0078d4;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+  text-align: center;
+}
+
+button:hover {
+  background: #005bb5;
+}
+
+#preferences-output {
+  margin-top: 20px;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+#preferences-json {
+  background: #eaeaea;
+  padding: 10px;
+  font-family: 'Courier New', Courier, monospace;
+  border-radius: 5px;
+  overflow-x: auto;
+}
+
+/* Checkbox Group Styles */
+.checkbox-group {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: #555;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox-group input[type="number"] {
+  width: 100px;
+  padding: 5px;
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.checkbox-group input[type="number"]:disabled {
+  background-color: #f0f0f0;
+  cursor: not-allowed;
+}
