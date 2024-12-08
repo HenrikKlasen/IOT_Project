@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script>
+        async function fetchDashboardData(roomId, startDate, endDate) {
+            const response = await fetch(`/api/dashboard_data?room_id=${roomId}&start_date=${startDate}&end_date=${endDate}`);
+            const data = await response.json();
+            console.log(data);
+            // Process data
+        }
+
+        // Example
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const roomId = 1;
+            const startDate = "2024-12-08T14:00:00";
+            const endDate = "2024-12-08T16:00:00";
+            fetchDashboardData(roomId, startDate, endDate);
+        });
+    </script>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <!-- Dashboard -->
+</body>
+</html>
