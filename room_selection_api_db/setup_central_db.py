@@ -1,9 +1,8 @@
 import os
-from db_utils import importDataIntoCollection, mergeDataInCollection
+from db_utils import importDataIntoCollection, mergeInitDataInCollection, mergeArduinoDataInCollection
+from pymongo import MongoClient
 
 def setupCentralDB(client):
-    #connect to the MongoDB server
-    #client = MongoClient("mongodb://localhost:27017/")
     #create database
     db = client['central_db']
     #create sensors collections to seperate the sensor types
@@ -17,7 +16,10 @@ def setupCentralDB(client):
     
     print("Database and collections have been set up and the data has been imported successfully.")
     
-    mergeDataInCollection(sensorsCollection, folderPath)
+    # add data from teacher in db central
+    mergeInitDataInCollection(sensorsCollection, folderPath)
 
 if __name__ == "__name__":
-    setupCentralDB()
+    #connect to the MongoDB server
+    client = MongoClient("mongodb://localhost:27017/")
+    sensorsCollection = setupCentralDB(client)

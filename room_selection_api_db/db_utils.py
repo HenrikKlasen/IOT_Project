@@ -12,7 +12,7 @@ def importDataIntoCollection(collection, folderPath, file):
                 collection.insert_many(data)
 
 #collection = roomData collection
-def mergeDataInCollection(collection, folderPath):
+def mergeInitDataInCollection(collection, folderPath):
         roomData = defaultdict(list)
         # loop through all sensors file in the directory
         for fileName in os.listdir(folderPath):
@@ -50,5 +50,47 @@ def mergeDataInCollection(collection, folderPath):
                         {"name": roomId},
                         {"$set": document},
                         upsert=True
+                )
+        print("Data merging and insertion into db completed")
+
+def mergeArduinoDataInCollection(collection, arduinoData):
+        roomId = arduinoData['name']
+        timestamp = arduinoData['timestamp']
+        sensorsValues = arduinoData['sensors_values']
+        
+        # retrieve full data to ensure that there are no missing attributes
+        sensorsValuesDetails = {
+                "timestamp": timestamp,
+                "temperature": sensorsValues.get("temperature"),
+                "humidity": sensorsValues.get("humidity"),
+                "light_intensity": sensorsValues.get("light_intensity"),
+                "sound_level": sensorsValues.get("sound_level"),
+                "co2_level": sensorsValues.get("co2_level"),
+                "PM2.5": sensorsValues.get("PM2.5"),
+                "PM10": sensorsValues.get("PM10"),
+                "VOC_level": sensorsValues.get("VOC_level")
+        }
+        
+        # check if a document with the room already exists
+        existing_room = collection.find_one({"rooms.name": roomId})
+        
+        if existing_room:
+                # update the existing document with new timestamp and sensor values
+                collection.update_one(
+                        {"rooms.name": roomId},
+                        {"$push": {
+                                "rooms.$.sensors_values": sensorsValuesDetails
+                        }}
+                )
+        else:
+                # insert new room with the sensor data
+                newRoom = {
+                        "name": roomId,
+                        "sensors_values": [sensorsValuesDetails]
+                }
+                collection.update_one(
+                {}, 
+                {"$push": {"rooms": newRoom}},
+                upsert=True
                 )
         print("Data merging and insertion into db completed")
