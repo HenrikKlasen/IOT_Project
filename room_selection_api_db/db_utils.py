@@ -4,6 +4,13 @@
 from collections import defaultdict
 import json
 import os
+from pymongo import MongoClient
+
+def setupMongoConnection(uri, db, collection):
+        client = MongoClient(uri)
+        dbName = client[db]
+        collectionName = dbName[collection]
+        return collectionName
 
 def importDataIntoCollection(collection, folderPath, file):
         filePath = os.path.join(folderPath, file)
@@ -94,3 +101,33 @@ def mergeArduinoDataInCollection(collection, arduinoData):
                 upsert=True
                 )
         print("Data merging and insertion into db completed")
+        
+def getLatestSensorsData(collection, roomId):
+        """Gets last data added to the db for a specified room number
+
+        Args:
+            collection (MongoDB Collection): sensors collection
+            roomId: room number
+
+        Returns:
+            result list with the latest sensors data for room number roomId
+        """
+        result = collection.aggregate([
+                {"$match": {"rooms.name": roomId}},
+                {"$unwind": "$rooms"},
+                {"$unwind": "$rooms.sensors_values"}, 
+                {"$match": {"rooms.name": roomId}}, 
+                {"$sort": {"rooms.sensors_values.timestamp": -1}}, {"$limit": 1} 
+        ]) 
+        return list(result)[0] if result else None
+
+# Function to get data in a date range 
+def getSensorsDataInDateRange(collection, roomId, startDate, endDate): 
+        result = collection.aggregate([ 
+                {"$match": {"rooms.name": roomId}}, 
+                {"$unwind": "$rooms"}, 
+                {"$unwind": "$rooms.sensors_values"}, 
+                {"$match": {"rooms.name": roomId, "rooms.sensors_values.timestamp": {"$gte": startDate, "$lte": endDate}}}, 
+                {"$sort": {"rooms.sensors_values.timestamp": 1}} 
+        ]) 
+        return list(result)
