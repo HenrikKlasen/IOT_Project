@@ -1,5 +1,7 @@
 import os
-from db_utils import importDataIntoCollection, mergeInitDataInCollection, mergeArduinoDataInCollection
+import sys
+sys.path.insert(0, "C:/Users/henri/Documents/Uni.lu/Semester 5/IOT/Project/IOT_Project")
+from room_selection_api_db.db_utils import importDataIntoCollection, mergeInitDataInCollection, mergeArduinoDataInCollection
 from pymongo import MongoClient
 
 def setupCentralDB(client):
@@ -9,7 +11,8 @@ def setupCentralDB(client):
     sensorsCollection = db['sensor_collection']
 
     #insert data from json files into the collections
-    folderPath = './Project_sensor_data/sensors_data'
+    folderPath = "C:/Users/henri/Documents/Uni.lu/Semester 5/IOT/Project/IOT_Project/room_selection_api_db/Project_sensor_data/sensors_data"
+    sys.path.insert(0, folderPath)
     for file in os.listdir(folderPath):
         if file.endswith('.json'):
             importDataIntoCollection(sensorsCollection, folderPath, file)

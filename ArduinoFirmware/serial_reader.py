@@ -1,5 +1,3 @@
-from pymongo import MongoClient
-import serial
 import sys
 sys.path.append('../')
 import time
@@ -8,10 +6,14 @@ from aiocoap import *
 from coap_comms import post_sensor_data
 import asyncio
 import serial_asyncio
-from room_selection_api_db.db_utils import mergeArduinoDataInCollection
-from room_selection_api_db.setup_central_db import setupCentralDB
 
-async def readserial(comport, baudrate, sensorsCollection, timestamp=False):
+async def readserial(comport, baudrate, timestamp=False):
+    """
+    comport: Communication port
+    baudrate: Baudrate - Channel of serial communication
+    timestamp: Timestamp
+    Summary: Reads serial, and transforms them into JSON, sends them to coap_server.
+    """
     reader, writer = await serial_asyncio.open_serial_connection(url=comport, baudrate=baudrate)
 
     while True:
@@ -44,13 +46,14 @@ async def readserial(comport, baudrate, sensorsCollection, timestamp=False):
             
         if timestamp:
             timestamp_str = time.strftime('%Y-%m-%dT%H:%M:%S')
-            sensor_data = parse_to_json_string(parse_to_json_dict(timestamp=timestamp_str, roomID=1, temp=temp, humidity=humidity, noiseLv=noiseAnalog, lum=luminosity))
-            print(sensor_data)
-            mergeArduinoDataInCollection(sensorsCollection, sensor_data)
-            await post_sensor_data(sensor_data.encode("utf-8"))
+            await post_sensor_data(
+                parse_to_json_string(
+                    parse_to_json_dict(
+                        timestamp=timestamp_str, roomID=1, temp=temp, noiseLv=noiseAnalog, lum=luminosity
+                        )
+                    ).encode("utf-8")
+            )
 
 if __name__ == '__main__':
-    client = MongoClient("mongodb://localhost:27017/")
-    sensorsCollection = setupCentralDB(client)
-    asyncio.run(readserial('COM4', 9600, sensorsCollection=sensorsCollection, timestamp=True))
+    asyncio.run(readserial('COM3', 9600, timestamp=True))
 
