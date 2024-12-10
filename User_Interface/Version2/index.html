@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Room Preference Evaluation</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header with toggle buttons -->
+    <header>
+      <h1>Room Preference Evaluation</h1>
+      <div class="toggle-buttons">
+        <button id="preferencesBtn">Preferences</button>
+        <button id="documentationBtn">Documentation</button>
+      </div>
+    </header>
+
+    <!-- Form for Preferences -->
+    <div id="preferencesSection">
+      <form id="preferenceForm">
+
+        <!-- Functional Requirements -->
+        <section>
+          <h2>1. Functional Requirements</h2>
+          
+          <!-- Date and Time Selection -->
+          <fieldset>
+            <legend>Date and Time</legend>
+            <label for="date">Preferred Date:</label>
+            <input type="date" id="date" name="date"><br>
+            <label for="time">Preferred Time:</label>
+            <input type="time" id="time" name="time">
+          </fieldset>
+
+          <!-- Room Size -->
+          <fieldset>
+            <legend>Room Size</legend>
+            <label><input type="radio" name="roomSize" value="1-2"> 1–2 people: "For individual use or a small discussion."</label><br>
+            <label><input type="radio" name="roomSize" value="3-5"> 3–5 people: "For a small group or team meeting."</label><br>
+            <label><input type="radio" name="roomSize" value="6-10"> 6–10 people: "For workshops or larger discussions."</label><br>
+            <label><input type="radio" name="roomSize" value="11-20"> 11–20 people: "For a seminar or medium-sized group."</label><br>
+            <label><input type="radio" name="roomSize" value="20+"> 20+ people: "For large gatherings or events."</label>
+          </fieldset>
+
+          <!-- Equipment -->
+          <fieldset>
+            <legend>Required Equipment</legend>
+            <label><input type="checkbox" name="equipment" value="projector"> Projector: "For presentations or media sharing."</label><br>
+            <label><input type="checkbox" name="equipment" value="computers"> Computers: <input type="number" name="computerQty" min="0" placeholder="Quantity"></label><br>
+            <label><input type="checkbox" name="equipment" value="chairs"> Chairs: <input type="number" name="chairQty" min="0" placeholder="Quantity"></label><br>
+            <label><input type="checkbox" name="equipment" value="tables"> Tables: <input type="number" name="tableQty" min="0" placeholder="Quantity"></label><br>
+            <label><input type="checkbox" name="equipment" value="whiteboard"> Whiteboard: "For brainstorming or instructional purposes."</label>
+          </fieldset>
+        </section>
+
+        <!-- Environmental Comfort -->
+        <section>
+          <h2>2. Environmental Comfort</h2>
+          
+          <!-- Thermal Comfort -->
+          <fieldset>
+            <legend>Preferred Room Temperature</legend>
+            <label><input type="radio" name="temperature" value="<17"> Way colder (<17°C): "I prefer a brisk, cool environment."</label><br>
+            <label><input type="radio" name="temperature" value="17-19"> A bit colder (17-19°C): "Slightly cooler than usual, but still comfortable."</label><br>
+            <label><input type="radio" name="temperature" value="19-21"> Normal (19-21°C): "Standard, balanced temperature feels best for me."</label><br>
+            <label><input type="radio" name="temperature" value="21-23"> A bit warmer (21-23°C): "I like a warm and cozy atmosphere."</label><br>
+            <label><input type="radio" name="temperature" value=">23"> Way warmer (>23°C): "I enjoy a toasty, heated environment."</label>
+          </fieldset>
+
+          <!-- Air Quality -->
+          <fieldset>
+            <legend>Fresh Air Importance</legend>
+            <label><input type="radio" name="airQuality" value="notImportant"> Not important: "I’m not concerned about air freshness."</label><br>
+            <label><input type="radio" name="airQuality" value="slightlyImportant"> Slightly important: "Some freshness is good, but not essential."</label><br>
+            <label><input type="radio" name="airQuality" value="important"> Important: "I value decent air quality for comfort."</label><br>
+            <label><input type="radio" name="airQuality" value="veryImportant"> Very important: "Fresh, clean air is a priority for me."</label><br>
+            <label><input type="radio" name="airQuality" value="essential"> Essential: "Exceptional air quality is non-negotiable."</label>
+          </fieldset>
+
+          <!-- Lighting -->
+          <fieldset>
+            <legend>Lighting Preference</legend>
+            <label><input type="radio" name="lighting" value="veryDim"> Very dim lighting: "I prefer a very low level of light for a serene, cozy setting."</label><br>
+            <label><input type="radio" name="lighting" value="dim"> Dim lighting: "I like low light levels for a calming effect."</label><br>
+            <label><input type="radio" name="lighting" value="soft"> Soft lighting: "Balanced light for a relaxed and comfortable atmosphere."</label><br>
+            <label><input type="radio" name="lighting" value="bright"> Bright lighting: "A well-lit space helps me focus and feel alert."</label><br>
+            <label><input type="radio" name="lighting" value="veryBright"> Very bright: "Maximum brightness energizes and keeps me active."</label>
+          </fieldset>
+        </section>
+
+        <!-- Sensory Experience -->
+        <section>
+          <h2>3. Sensory Experience</h2>
+          <fieldset>
+            <legend>Noise Sensitivity</legend>
+            <label><input type="radio" name="noiseSensitivity" value="lively"> Lively environment: "I enjoy a vibrant, noisy atmosphere."</label><br>
+            <label><input type="radio" name="noiseSensitivity" value="noMind"> I don’t mind noise: "I’m okay with lively or noisy spaces."</label><br>
+            <label><input type="radio" name="noiseSensitivity" value="someNoise"> Some noise is okay: "A bit of background noise is acceptable."</label><br>
+            <label><input type="radio" name="noiseSensitivity" value="quiet"> I need quiet: "Minimal noise is preferred for better focus."</label><br>
+            <label><input type="radio" name="noiseSensitivity" value="silence"> Silence is essential: "The room must be as quiet as possible."</label>
+          </fieldset>
+        </section>
+
+        <!-- JSON Output Section -->
+        <section>
+          <h2>4. JSON Output</h2>
+          <textarea id="jsonOutput" rows="10" cols="50" readonly>
+            Your preferences will appear here as JSON after submission.
+          </textarea>
+        </section>
+
+        <!-- Form Actions -->
+        <div class="actions">
+          <button type="submit">Submit Preferences</button>
+          <button type="reset">Reset Preferences</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
