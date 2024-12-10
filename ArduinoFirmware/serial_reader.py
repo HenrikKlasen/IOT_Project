@@ -13,7 +13,7 @@ async def readserial(comport, baudrate, timestamp=False):
 
     while True:
         temp = (await reader.readline()).decode().strip()
-        humidity = (await reader.readline()).decode().strip()
+        #humidity = (await reader.readline()).decode().strip()
         luminosityAnalog = (await reader.readline()).decode().strip()
         noiseAnalog = (await reader.readline()).decode().strip()
         luminosityAnalog = int(luminosityAnalog)
@@ -40,12 +40,12 @@ async def readserial(comport, baudrate, timestamp=False):
         else: 
             luminosity = -1
         
-        print(temp, humidity)
+        print(temp)
         if timestamp:
             timestamp_str = time.strftime('%Y/%m/%d|%H:%M:%S')
-            await post_sensor_data(serial_parser.parse_to_json(timestamp=timestamp_str, roomID=1, temp=temp, humidity=humidity, noiseLv=noiseAnalog, lum=luminosity).encode("utf-8"))
+            await post_sensor_data(serial_parser.parse_to_json(timestamp=timestamp_str, roomID=1, temp=temp, noiseLv=noiseAnalog, lum=luminosity).encode("utf-8"))
 
 
 if __name__ == '__main__':
-    asyncio.run(readserial('COM4', 9600, timestamp=True))
+    asyncio.run(readserial('COM3', 9600, timestamp=True))
 
