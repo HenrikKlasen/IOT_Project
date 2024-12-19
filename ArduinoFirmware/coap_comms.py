@@ -5,7 +5,7 @@ import json
 async def get_sensor_data():
     protocol = await Context.create_client_context()
 
-    request = Message(code=GET, uri='coap://127.0.0.1:5683/Room1')
+    request = Message(code=GET, uri='coap://127.0.0.1:5683/Room_1')
 
     try:
         response = await protocol.request(request).response
@@ -17,7 +17,7 @@ async def get_sensor_data():
 async def post_sensor_data(data):
     protocol = await Context.create_client_context()
 
-    request = Message(code=POST, uri='coap://127.0.0.1:5683/Room1', payload=data)
+    request = Message(code=POST, uri='coap://127.0.0.1:5683/Room_1', payload=data)
 
     try:
         response = await protocol.request(request).response

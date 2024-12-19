@@ -1,23 +1,23 @@
 import os
-from db_utils import importDataIntoCollection, mergeInitDataInCollection, mergeArduinoDataInCollection
+from db_utils import dbExists, mergeInitDataInCollection
 from pymongo import MongoClient
 
-def setupCentralDB(client):
+def setupCentralDB(client, folderPath):
     #create database
-    db = client['central_db']
+    db = client["db"]
     #create sensors collections to seperate the sensor types
-    sensorsCollection = db['sensor_collection']
+    sensorsCollection = db['sensors_collection']
 
     #insert data from json files into the collections
-    folderPath = './Project_sensor_data/sensors_data'
-    for file in os.listdir(folderPath):
-        if file.endswith('.json'):
-            importDataIntoCollection(sensorsCollection, folderPath, file)
+    # for file in os.listdir(folderPath):
+    #     if file.endswith('.json'):
+    #         importDataIntoCollection(sensorsCollection, folderPath, file)
     
+    mergeInitDataInCollection(sensorsCollection, folderPath)
     print("Database and collections have been set up and the data has been imported successfully.")
     
     # add data from teacher in db central
-    mergeInitDataInCollection(sensorsCollection, folderPath)
+    
 
 if __name__ == "__name__":
     #connect to the MongoDB server

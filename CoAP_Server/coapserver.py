@@ -10,7 +10,7 @@ __author__ = 'Giacomo Tanganelli'
 class CoAPServer(CoAP):
     def __init__(self, host, port, multicast=False):
         CoAP.__init__(self, (host, port), multicast)
-        self.add_resource("Room1/", SensorResource())
+        self.add_resource("Room_1/", SensorResource())
         self.add_resource("SimpleResource/", SimpleResource())
         print("CoAP Server start on " + host + ":" + str(port))
         print(self.root.dump())

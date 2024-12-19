@@ -12,15 +12,54 @@ def setupMongoConnection(uri, db, collection):
         collectionName = dbName[collection]
         return collectionName
 
+def dbExists(client):
+# Connect to MongoDB
+        client = client
+
+        # List all databases
+        databases = client.list_database_names()
+
+        # Check if the database exists
+        database_name = 'db'
+        if database_name in databases:
+                print(f"Database '{database_name}' exists.")
+        
+        # Access the database
+                db = client[database_name]
+        
+        # List all collections in the database
+                collections = db.list_collection_names()
+                if collections:
+                        print(f"Database '{database_name}' is not empty. Collections: {collections}")
+                
+                # Check if collections contain any documents
+                        for collection_name in collections:
+                                collection = db[collection_name]
+                                document = collection.find_one()
+                                if document:
+                                        print(f"Collection '{collection_name}' contains documents.")
+                                        result = collection.delete_many({})
+                                        print(f"Deleting the documents {result.deleted_count()}")
+                                else:
+                                        print(f"Collection '{collection_name}' is empty.")
+                else:
+                        print(f"Database '{database_name}' has no collections.")
+        else:
+                print(f"Database '{database_name}' does not exist.")
+
 def importDataIntoCollection(collection, folderPath, file):
-        filePath = os.path.join(folderPath, file)
+        filePath = f"{folderPath}\\{file}"
         with open(filePath) as f:
                 data = json.load(f)
-                collection.insert_many(data)
+                if isinstance(data, list):
+                        collection.insert_many(data)
+                else:
+                        collection.insert_one(data)
 
 #collection = roomData collection
 def mergeInitDataInCollection(collection, folderPath):
         roomData = defaultdict(list)
+        sensors_list = ['light_intensity_values', 'sound_values', 'air_quality_values', 'co2_values', 'humidity_values', 'temperature_values', 'voc_values']
         # loop through all sensors file in the directory
         for fileName in os.listdir(folderPath):
                 if fileName.endswith(".json"):
@@ -30,6 +69,9 @@ def mergeInitDataInCollection(collection, folderPath):
                                 # merge new data with existing data
                                 for room in data['rooms']:
                                         roomId = room['name']
+                                        for valueType in sensors_list:
+                                                if valueType in room: 
+                                                        room['sensors_values'] = room.pop(valueType) 
                                         sensorData = room['sensors_values']
                                         roomData[roomId].extend(sensorData)
         # transform merged data

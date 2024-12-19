@@ -9,15 +9,12 @@ if __name__ == "__main__":
     #create database
     db = client.db
     #create collections to separate the data regarding rooms from the data regarding the sensors
-    roomsCollection = db.rooms
-    sensorsCollection = db.sensors
+    roomsCollection = db["rooms_collection"]
+    sensorsCollection = db['sensors_collection']
     
     #verify that the collections have been created
     checkDB(db)
     
-    # print("Rooms Collection:")
-    # for room in roomsCollection.find():
-    #     print(room)
-    # print("\nSensors Collection:")
-    # for sensor in sensorsCollection.find():
-    #     print(sensor)
+    print("Rooms Collection:")
+    for room in roomsCollection.find():
+        print(room)
