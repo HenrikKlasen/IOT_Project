@@ -52,15 +52,27 @@ def importDataIntoCollection(collection, folderPath, file):
         with open(filePath) as f:
                 data = json.load(f)
                 if isinstance(data, list):
-                        collection.insert_many(data)
+                        for document in data:
+                                checkAndInsertDocument(collection, document)
                 else:
-                        collection.insert_one(data)
+                        checkAndInsertDocument(collection, data)
 
+def checkAndInsertDocument(collection, document):
+        timestamp = "timestamp"
+        existingDocument = collection.find_one({timestamp: document[timestamp]})
+        if not existingDocument: 
+                collection.insert_one(document) 
+        else: 
+                # Optionally update the existing document if needed 
+                collection.update_one( 
+                        {timestamp: document[timestamp]}, 
+                        {"$set": document}
+                )
+                
 #collection = roomData collection
 def mergeInitDataInCollection(collection, folderPath):
         roomData = defaultdict(list)
-        sensors_list = ['light_intensity_values', 'sound_values', 'air_quality_values', 'co2_values', 'humidity_values', 'temperature_values', 'voc_values']
-        # loop through all sensors file in the directory
+        sensorsList = ['light_intensity_values', 'sound_values', 'air_quality_values', 'co2_values', 'humidity_values', 'temperature_values', 'voc_values']
         for fileName in os.listdir(folderPath):
                 if fileName.endswith(".json"):
                         filePath = os.path.join(folderPath, fileName)
@@ -69,7 +81,7 @@ def mergeInitDataInCollection(collection, folderPath):
                                 # merge new data with existing data
                                 for room in data['rooms']:
                                         roomId = room['name']
-                                        for valueType in sensors_list:
+                                        for valueType in sensorsList:
                                                 if valueType in room: 
                                                         room['sensors_values'] = room.pop(valueType) 
                                         sensorData = room['sensors_values']
@@ -90,16 +102,25 @@ def mergeInitDataInCollection(collection, folderPath):
                         sensorsValues.append(sensorEntry)
                 # sort the list by timestamp
                 sensorsValues = sorted(sensorsValues, key=lambda x: x['timestamp'])
-                # insert or update document in MongoDB
-                document = {
-                        "name": roomId,
-                        "sensors_values": sensorsValues
-                }
-                collection.update_one(
-                        {"name": roomId},
-                        {"$set": document},
-                        upsert=True
-                )
+                
+                # check for existing documents in MongoDB
+                existingDocument = collection.find_one({"name": roomId})
+                if existingDocument:
+                        # Merge new sensor values with existing sensor values 
+                        existingSensors = existingDocument.get('sensors_values', []) 
+                        existingTimestamps = {sensor['timestamp'] for sensor in existingSensors} 
+                        newSensors = [sensor for sensor in sensorsValues if sensor['timestamp'] not in existingTimestamps] 
+                        updatedSensorsValues = existingSensors + newSensors 
+                        collection.update_one( 
+                                {"name": roomId}, 
+                                {"$set": {"sensors_values": updatedSensorsValues}} 
+                        ) 
+                else: 
+                        # Insert new document if it does not exist 
+                        document = { 
+                                "name": roomId, 
+                                "sensors_values": sensorsValues 
+                        }
         print("Data merging and insertion into db completed")
 
 def mergeArduinoDataInCollection(collection, arduinoData):
