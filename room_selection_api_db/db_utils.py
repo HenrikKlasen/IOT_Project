@@ -176,21 +176,20 @@ def getLatestSensorsData(collection, roomId):
             result list with the latest sensors data for room number roomId
         """
         result = collection.aggregate([
-                {"$match": {"rooms.name": roomId}},
-                {"$unwind": "$rooms"},
-                {"$unwind": "$rooms.sensors_values"}, 
-                {"$match": {"rooms.name": roomId}}, 
-                {"$sort": {"rooms.sensors_values.timestamp": -1}}, {"$limit": 1} 
+                {"$match": {"name": roomId}},
+                {"$unwind": "$sensors_values"},
+                {"$sort": {"sensors_values.timestamp": -1}}, 
+                {"$limit": 1} 
         ]) 
-        return list(result)[0] if result else None
+        resultList = list(result)
+        return resultList if resultList else None
 
 # Function to get data in a date range 
 def getSensorsDataInDateRange(collection, roomId, startDate, endDate): 
         result = collection.aggregate([ 
-                {"$match": {"rooms.name": roomId}}, 
-                {"$unwind": "$rooms"}, 
-                {"$unwind": "$rooms.sensors_values"}, 
-                {"$match": {"rooms.name": roomId, "rooms.sensors_values.timestamp": {"$gte": startDate, "$lte": endDate}}}, 
+                {"$match": {"name": roomId}},
+                {"$unwind": "$sensors_values"}, 
+                {"$match": {"sensors_values.timestamp": {"$gte": startDate, "$lte": endDate}}}, 
                 {"$sort": {"rooms.sensors_values.timestamp": 1}} 
         ]) 
         return list(result)
