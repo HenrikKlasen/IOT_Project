@@ -5,9 +5,9 @@ from ahp import *
 
 # Setup MongoDB connection 
 uri = "mongodb://localhost:27017/" 
-db_name = "central_db" 
-collection_name = "sensor_collection"
-collection = setupMongoConnection(uri, db_name, collection_name)
+dbName = "db" 
+collectionName = "sensor_collection"
+collection = setupMongoConnection(uri, dbName, collectionName)
 
 roomIds = [1, 2, 3]
 rooms = []

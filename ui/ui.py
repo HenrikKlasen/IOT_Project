@@ -6,12 +6,11 @@ from room_selection_api_db.db_utils import setupMongoConnection, getDashboardDat
 app = Flask(__name__)
 
 uri = "mongodb://localhost:27017/" 
-centralDbName = "central_db"
-externalDbName = "external_db"
+dbName = "db"
 sensorCollectionName = "sensor_collection"
-sensorCollection = setupMongoConnection(uri, centralDbName, sensorCollectionName)
+sensorCollection = setupMongoConnection(uri, dbName, sensorCollectionName)
 roomsCollectionName = "rooms_collection"
-roomsCollection = setupMongoConnection(uri, externalDbName, roomsCollectionName)
+roomsCollection = setupMongoConnection(uri, dbName, roomsCollectionName)
 
 @app.route('/api/dashboard_data', methods=['GET'])
 def getDashboardData():
