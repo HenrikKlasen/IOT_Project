@@ -1,0 +1,130 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  height: 50px; /* Make the header smaller */
+  display: flex;
+  justify-content: flex-end; /* Position the toggle on the top right corner */
+  align-items: center;
+  padding: 0 20px;
+  background-color: var(--header-bg-color);
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.graph-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px; /* Adjust the gap as needed */
+  padding: 20px;
+}
+
+.graph-grid > div {
+  min-width: 300px;
+  height: 400px; /* Adjust the height as needed */
+}
+
+body.light-mode {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+body.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+.dark-mode .App-header {
+  background-color: #121212;
+}
+
+.dark-mode .App-link {
+  color: #bb86fc;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute; /* Hide the checkbox input */
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #00f2ff;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  display: none; /* Hide the block/ball */
+}
+
+input:checked + .slider {
+  background-color: #003765;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.slider .fas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.slider:after {
+  content: '\f185';
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #ffff00;
+  transition: 0.4s;
+}
+
+input:checked + .slider:after {
+  content: '\f186';
+  left: auto;
+  right: 10px;
+  color: #ffee7c;
+}
