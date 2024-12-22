@@ -14,10 +14,10 @@ async def get_sensor_data():
         print('Failed to fetch resource:')
         print(e)
 
-async def post_sensor_data(data):
+async def post_sensor_data(data, room_id=1):
     protocol = await Context.create_client_context()
 
-    request = Message(code=POST, uri='coap://127.0.0.1:5683/Room1', payload=data)
+    request = Message(code=POST, uri=f'coap://127.0.0.1:5683/Room{room_id}', payload=data)
 
     try:
         response = await protocol.request(request).response
