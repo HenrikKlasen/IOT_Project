@@ -7,8 +7,9 @@ def setupCentralDB(client, folderPath):
     db = client["db"]
     #create sensors collections to seperate the sensor types
     sensorsCollection = db['sensors_collection']
-
+    print("Hello")
     #insert data from json files into the collections
+    print(os.listdir(folderPath))
     for file in os.listdir(folderPath):
         if file.endswith('.json'):
             importDataIntoCollection(sensorsCollection, folderPath, file)
@@ -19,7 +20,7 @@ def setupCentralDB(client, folderPath):
     # add data from teacher in db central
     
 
-if __name__ == "__name__":
+if __name__ == "__main__":
     #connect to the MongoDB server
     client = MongoClient("mongodb://localhost:27017/")
-    sensorsCollection = setupCentralDB(client, os.getcwd()+"/room_selection_api_db/Project_sensor_data")
+    sensorsCollection = setupCentralDB(client, os.getcwd()+"\\room_selection_api_db\\Project_sensor_data\\sensors_data")

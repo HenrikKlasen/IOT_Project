@@ -12,7 +12,7 @@ def main():
     """
     host = "127.0.0.1"
     port = 5683
-    path = "Room1"
+    path = "Room3"
 
 
     client = HelperClient(server=(host, port))

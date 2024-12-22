@@ -53,21 +53,21 @@ def importDataIntoCollection(collection, folderPath, file):
                 data = json.load(f)
                 if isinstance(data, list):
                         for document in data:
-                                checkAndInsertDocument(collection, document)
+                                collection.insert_one(document)
                 else:
-                        checkAndInsertDocument(collection, data)
+                        collection.insert_one(data)
 
-def checkAndInsertDocument(collection, document):
-        timestamp = 'timestamp'
-        existingDocument = collection.find_one({timestamp: document[timestamp]})
-        if not existingDocument: 
-                collection.insert_one(document) 
-        else: 
-                # Optionally update the existing document if needed 
-                collection.update_one( 
-                        {timestamp: document[timestamp]}, 
-                        {"$set": document}
-                )
+# def checkAndInsertDocument(collection, document):
+#         timestamp = 'timestamp'
+#         existingDocument = collection.find_one({timestamp: document[timestamp]})
+#         if not existingDocument: 
+#                 collection.insert_one(document) 
+#         else: 
+#                 # Optionally update the existing document if needed 
+#                 collection.update_one( 
+#                         {timestamp: document[timestamp]}, 
+#                         {"$set": document}
+#                 )
                 
 #collection = roomData collection
 def mergeInitDataInCollection(collection, folderPath):

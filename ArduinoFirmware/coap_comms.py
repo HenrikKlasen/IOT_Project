@@ -3,6 +3,9 @@ import asyncio
 import json
 
 async def get_sensor_data():
+    """
+    Retrieve the data from the CoAP server.
+    """
     protocol = await Context.create_client_context()
 
     request = Message(code=GET, uri='coap://127.0.0.1:5683/Room1')
@@ -15,6 +18,12 @@ async def get_sensor_data():
         print(e)
 
 async def post_sensor_data(data, room_id=1):
+    """Post the data to the CoAP server.
+
+    Args:
+        data (_type_): Sensor data to be posted
+        room_id (int, optional): room number. Defaults to 1.
+    """
     protocol = await Context.create_client_context()
 
     request = Message(code=POST, uri=f'coap://127.0.0.1:5683/Room{room_id}', payload=data)

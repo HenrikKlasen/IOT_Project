@@ -4,7 +4,7 @@ import getopt
 import sys
 from coapthon.server.coap import CoAP
 from resources import SensorResource, SimpleResource
-__author__ = 'Giacomo Tanganelli'
+__author__ = 'Henrik Klasen'
 
 
 class CoAPServer(CoAP):
