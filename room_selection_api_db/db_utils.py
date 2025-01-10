@@ -165,6 +165,13 @@ def mergeArduinoDataInCollection(collection, arduinoData):
                 )
         print("Data merging and insertion into db completed")
         
+        countDocumentsInCollection = collection.count_documents({})
+        if countDocumentsInCollection > 30:
+                oldestEntries = collection.find().sort("timestamp", 1).limit(countDocumentsInCollection - 30)
+                oldestEntriesIds = [entry["_id"] for entry in oldestEntries]
+                collection.delete_many({"_id": {"$in": oldestEntriesIds}})
+        print("Old data except the last 30 entries were deleted")
+        
 def getLatestSensorsData(collection, roomId):
         """Gets last data added to the db for a specified room number
 
