@@ -17,17 +17,31 @@ def co2_score(x,opt_small=400,opt_big=700,flexibility=100):
     else:
         return np.max([np.exp(-np.power((x-opt_big),2)/(2*np.power(flexibility,2)))-0.5,0])
     
-def humidity_score(x,optimal=None,flexibility=None):
-    return x
+def humidity_score(x,opt_small=0.3,opt_big=0.5,flexibility=None):
+    if x < opt_small:
+        return 3.3*x
+    if x < opt_big:
+        return 1 
+    return 1 - 0.4*((x-0.5)/(opt_big-opt_small))
 
-def voc_score(x,opt_small=None,opt_big=None,flexibility=None):
-    return x
+def voc_score(x,opt_small=0.5,opt_big=1,flexibility=None):
+    if x < opt_small:
+        return 1
+    if x < opt_big:
+        return 1 - np.log(opt_small+x)
+    return np.maximum(1/np.log(x+0.6)-1.6,0)
 
-def light_score(x,optimal=None,flexibility=None):
-    return x
+def light_score(x,opt_small=300,opt_big=500,flexibility=None):
+    if x < opt_small:
+        return np.maximum(np.exp(x/300 - 0.3)-1,0)
+    if x < opt_big:
+        return 1
+    return np.maximum(1-0.0033*(x-500),0)
 
-def sound_score(x,opt_small=None,opt_big=None,flexibility=None):
-    return x
+def sound_score(x,opt_small=0.35,opt_big=0.35,flexibility=None):
+    if x < opt_small:
+        return 1
+    return np.maximum(-(1/35)*x+2,0)
 
 CRITERIA_NAMES = ["temperature","co2","humidity","voc","light","sound"]
 CRITERIA_FUNCTIONS = [temperature_score, co2_score, humidity_score, voc_score, light_score, sound_score]
