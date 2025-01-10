@@ -16,10 +16,11 @@
 .App-header {
   height: 50px; /* Make the header smaller */
   display: flex;
-  justify-content: flex-end; /* Position the toggle on the top right corner */
+  justify-content: flex-start; /* Position the toggle on the top left corner */
   align-items: center;
   padding: 0 20px;
   background-color: var(--header-bg-color);
+  z-index: 1; /* Ensure the header is on top */
 }
 
 .App-link {
@@ -35,11 +36,19 @@
   }
 }
 
+.main-content {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
 .graph-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr); /* 2 horizontal columns */
+  grid-template-rows: repeat(4, 1fr); /* 4 vertical rows */
   gap: 40px; /* Adjust the gap as needed */
   padding: 20px;
+  width: 70%; /* Adjust width as needed */
 }
 
 .graph-grid > div {
@@ -127,4 +136,57 @@ input:checked + .slider:after {
   left: auto;
   right: 10px;
   color: #ffee7c;
+}
+
+.room-sensors {
+  display: flex;
+  flex-direction: column; /* Stack rooms on top of each other */
+  padding: 20px;
+  width: 30%; /* Adjust width as needed */
+}
+
+.room {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.dark-mode .room {
+  background-color: #333;
+  border-color: #555;
+}
+
+.room h3 {
+  margin-top: 0;
+}
+
+.room ul {
+  list-style-type: none; /* Hide bullet points */
+  padding: 0;
+}
+
+.dark-mode .room ul {
+  list-style-type: none; /* Ensure bullet points are hidden in dark mode */
+}
+
+.sensor-status {
+  padding: 5px;
+  margin: 5px 0;
+  border-radius: 4px;
+  color: white;
+}
+
+.sensor-status.green {
+  background-color: green;
+}
+
+.sensor-status.yellow {
+  background-color: yellow;
+  color: black;
+}
+
+.sensor-status.red {
+  background-color: red;
 }

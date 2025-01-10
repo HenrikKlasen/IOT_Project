@@ -23,27 +23,36 @@ ChartJS.register(
 
 const GrafanaGraph = ({ sensorData, gridColor }) => {
   const roomColors = ['rgba(75,192,192,1)', 'rgba(255,99,132,1)', 'rgba(54,162,235,1)'];
+  const twelveHoursAgo = Date.now() - 12 * 60 * 60 * 1000;
 
   const generateGraphData = (sensorType) => {
-    const labels = [];
-    const datasets = [];
+    const labelsSet = new Set();
+    const roomData = sensorData.map(room => {
+      return room.sensors_values
+        .filter(sensor => new Date(sensor.timestamp).getTime() >= twelveHoursAgo) // Filter out old datapoints
+        .map(sensor => {
+          labelsSet.add(sensor.timestamp);
+          return { timestamp: sensor.timestamp, value: sensor[sensorType] };
+        });
+    });
 
-    sensorData.forEach((room, index) => {
-      const data = [];
-      room.sensors_values.forEach(sensor => {
-        if (labels.length < room.sensors_values.length) {
-          labels.push(new Date(sensor.timestamp).toLocaleTimeString());
-        }
-        data.push(sensor[sensorType]);
+    const labels = Array.from(labelsSet).sort((a, b) => new Date(a) - new Date(b)).map(timestamp => new Date(timestamp).toLocaleTimeString());
+
+    const datasets = sensorData.map((room, index) => {
+      const data = labels.map(label => {
+        const sensor = room.sensors_values.find(sensor => new Date(sensor.timestamp).toLocaleTimeString() === label);
+        return sensor ? sensor[sensorType] : null;
       });
 
-      datasets.push({
+      return {
         label: `Room ${room.name} - ${sensorType}`,
         data,
         fill: false,
         backgroundColor: roomColors[index],
         borderColor: roomColors[index],
-      });
+        showLine: true, // Ensure the data is displayed as lines
+        pointRadius: 3, // Show the points
+      };
     });
 
     return {

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
+import React, { useState, useEffect, useCallback } from 'react';
+import logo from './logo.jpg';
 import './App.css';
 import GrafanaGraph from './GrafanaGraph';
 import RoomSensors from './RoomSensors';
@@ -8,7 +8,9 @@ import '@fortawesome/fontawesome-free/css/all.min.css'; // Import Font Awesome C
 function App() {
   const [sensorData, setSensorData] = useState([]);
   const [lastUpdate, setLastUpdate] = useState(Date.now());
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('darkMode') === 'true';
+  });
 
   useEffect(() => {
     const fetchData = () => {
@@ -30,19 +32,23 @@ function App() {
     };
 
     fetchData(); // Fetch data immediately on mount
-    const interval = setInterval(fetchData, 30000); // Fetch data every 30 seconds
+    const interval = setInterval(fetchData, 60000); // Fetch data every 60 seconds
 
     return () => clearInterval(interval);
   }, []);
 
-  const isRoomAvailable = (room) => {
+  useEffect(() => {
+    document.body.classList.toggle('dark-mode', darkMode);
+    localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);
+
+  const isRoomAvailable = useCallback((room) => {
     const now = Date.now();
-    return (now - lastUpdate) <= 35000 && sensorData[room] !== null;
-  };
+    return (now - lastUpdate) <= 65000 && sensorData[room] !== null;
+  }, [lastUpdate, sensorData]);
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
-    document.body.classList.toggle('dark-mode', !darkMode);
   };
 
   return (
@@ -54,7 +60,7 @@ function App() {
           </span>
         </label>
       </header>
-      <main>
+      <main className="main-content">
         <GrafanaGraph sensorData={sensorData} gridColor={darkMode ? 'gray' : 'lightgray'} />
         <RoomSensors sensorData={sensorData} isRoomAvailable={isRoomAvailable} />
       </main>
@@ -62,4 +68,4 @@ function App() {
   );
 }
 
-export default App;
+export default React.memo(App);
