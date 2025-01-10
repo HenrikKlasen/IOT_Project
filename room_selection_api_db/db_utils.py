@@ -200,3 +200,54 @@ def getSensorsDataInDateRange(collection, roomId, startDate, endDate):
                 {"$sort": {"rooms.sensors_values.timestamp": 1}} 
         ]) 
         return list(result)
+
+def createEvent(roomId, startDateTime, endDateTime, isAvailable):
+        collection = setupMongoConnection("mongodb://localhost:27017/", "db", "calendar_collection")
+        event = {
+                "start": startDateTime,
+                "end": endDateTime,
+                "isAvailable": isAvailable
+        }
+        
+        existingRoom = collection.find_one({"rooms.name": roomId})
+        
+        if existingRoom:
+                collection.update_one(
+                        {"rooms.name": roomId},
+                        {"$push": {
+                                "rooms.$.events": event
+                        }}
+                )
+        else:
+                newRoom = {
+                        "name": roomId,
+                        "events": [event]
+                }
+                collection.update_one(
+                        {},
+                        {"$push": {"rooms": newRoom}},
+                        upsert=True
+                )
+        collection.insert_one(event)
+        print("New calendar event created")
+
+def getAvailableRooms(startDateTime, endDateTime):
+        collection = setupMongoConnection("mongodb://localhost:27017/", "db", "calendar_collection")
+        availableRooms = []
+        
+        allRooms = collection.find({"rooms": {"$exists": True}})
+        
+        for room in allRooms:
+                for roomData in room["rooms"]:
+                        roomId = roomData["name"]
+                        isAvailable = True
+                
+                for event in roomData["events"]:
+                        if not ((event['end_timestamp'] <= startDateTime) or (event['start_timestamp'] >= endDateTime)): 
+                                if not event['isAvailable']: 
+                                        isAvailable = False 
+                                        break
+                if isAvailable:
+                        availableRooms.append(roomId)
+        
+        return availableRooms
