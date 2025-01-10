@@ -243,7 +243,7 @@ def getAvailableRooms(startDateTime, endDateTime):
                         isAvailable = True
                 
                 for event in roomData["events"]:
-                        if not ((event['end_timestamp'] <= startDateTime) or (event['start_timestamp'] >= endDateTime)): 
+                        if not ((event['end'] <= startDateTime) or (event['start'] >= endDateTime)): 
                                 if not event['isAvailable']: 
                                         isAvailable = False 
                                         break
