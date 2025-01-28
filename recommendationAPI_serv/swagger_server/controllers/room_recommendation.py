@@ -22,7 +22,9 @@ def humidity_score(x,opt_small=0.3,opt_big=0.5,flexibility=None):
         return 3.3*x
     if x < opt_big:
         return 1 
-    return 1 - 0.4*((x-0.5)/(opt_big-opt_small))
+    if 1 - 3.5*(x-0.5) > 0:
+        return 1 - 3.5*(x-0.5)
+    return 0
 
 def voc_score(x,opt_small=0.5,opt_big=1,flexibility=None):
     if x < opt_small:
