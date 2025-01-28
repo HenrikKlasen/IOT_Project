@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import logo from './logo.jpg';
+import logo from './logo.svg';
 import './App.css';
 import GrafanaGraph from './GrafanaGraph';
 import RoomSensors from './RoomSensors';
