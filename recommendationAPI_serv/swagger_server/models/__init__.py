@@ -1,0 +1,20 @@
+# coding: utf-8
+
+# flake8: noqa
+from __future__ import absolute_import
+# import models into model package
+from swagger_server.models.facility import Facility
+from swagger_server.models.flexibility_value import FlexibilityValue
+from swagger_server.models.inline_response400 import InlineResponse400
+from swagger_server.models.one_of_optimal_values_co2_opt import OneOfOptimalValuesCo2Opt
+from swagger_server.models.one_of_optimal_values_humidity_opt import OneOfOptimalValuesHumidityOpt
+from swagger_server.models.one_of_optimal_values_light_opt import OneOfOptimalValuesLightOpt
+from swagger_server.models.one_of_optimal_values_sound_opt import OneOfOptimalValuesSoundOpt
+from swagger_server.models.one_of_optimal_values_temperature_opt import OneOfOptimalValuesTemperatureOpt
+from swagger_server.models.one_of_optimal_values_voc_opt import OneOfOptimalValuesVocOpt
+from swagger_server.models.optimal_values import OptimalValues
+from swagger_server.models.room import Room
+from swagger_server.models.room_metrics import RoomMetrics
+from swagger_server.models.room_request import RoomRequest
+from swagger_server.models.room_request_room_size import RoomRequestRoomSize
+from swagger_server.models.weighted_category import WeightedCategory

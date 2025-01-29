@@ -1,0 +1,337 @@
+openapi: 3.0.0
+info:
+  title: Room Recommendation System
+  description: A RESTful API that provides the most optimal room for your studying
+    needs
+  version: 0.0.2
+servers:
+- url: http://localhost:8087
+  description: Testing server
+paths:
+  /recommend-rooms:
+    post:
+      summary: Recommend rooms based on user-provided weights.
+      operationId: recommend_rooms_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomRequest'
+        required: true
+      responses:
+        "200":
+          description: A list of recommended rooms.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Room'
+                x-content-type: application/json
+        "400":
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+components:
+  schemas:
+    RoomMetrics:
+      type: object
+      properties:
+        temperature:
+          type: number
+          description: Ambient temperature inside the room measured in degrees Celsius.
+          example: 20
+        co2:
+          type: number
+          description: CO2 content in the room measured in parts per million.
+          example: 500
+        humidity:
+          type: number
+          description: Humidity level in the room measured in percentage.
+          example: 0.5
+        voc:
+          type: number
+          description: Volatile Organic Compounds (VOC) measured in milligrams per
+            cubic meter.
+          example: 0.5
+        light:
+          type: number
+          description: Light intensity measured in lux.
+          example: 400
+        sound:
+          type: number
+          description: Sound level measured in decibels.
+          example: 25
+      example:
+        light: 400
+        co2: 500
+        sound: 25
+        temperature: 20
+        humidity: 0.5
+        voc: 0.5
+    Facility:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the facility.
+          example: Projector
+        qunatity:
+          type: number
+          description: Required quantity of facility
+          example: 1
+      example:
+        qunatity: 1
+        name: Projector
+    Room:
+      type: object
+      properties:
+        roomID:
+          type: string
+          description: Unique room identification string.
+          example: MSA 4.070
+        dateTimeSlotStart:
+          type: string
+          description: The desired date and time slot for room availability start.
+          format: date-time
+          example: 2024-12-10T14:00:00Z
+        dateTimeSlotEnd:
+          type: string
+          description: The desired date and time slot for room availability dateTimeSlotEnd.
+          format: date-time
+          example: 2024-12-10T15:00:00Z
+        roomMetrics:
+          $ref: '#/components/schemas/RoomMetrics'
+        facilities:
+          type: array
+          description: List of facilities in the room.
+          items:
+            $ref: '#/components/schemas/Facility'
+        rank:
+          type: number
+          description: the rank of the room representing how well it satisfies the
+            request compared to the other available rooms.
+          example: 1
+      example:
+        dateTimeSlotStart: 2024-12-10T14:00:00Z
+        roomMetrics:
+          light: 400
+          co2: 500
+          sound: 25
+          temperature: 20
+          humidity: 0.5
+          voc: 0.5
+        dateTimeSlotEnd: 2024-12-10T15:00:00Z
+        rank: 1
+        facilities:
+        - qunatity: 1
+          name: Projector
+        - qunatity: 1
+          name: Projector
+        roomID: MSA 4.070
+    WeightedCategory:
+      type: object
+      properties:
+        temperature_weight:
+          type: number
+          description: Importance Weight for temperature.
+          example: 0.5
+        co2_weight:
+          type: number
+          description: Importance Weight for CO2.
+          example: 0.5
+        humidity_weight:
+          type: number
+          description: Importance Weight for humidity.
+          example: 0.5
+        voc_weight:
+          type: number
+          description: Importance Weight for Volatile Organic Compounds (VOC).
+          example: 0.5
+        light_weight:
+          type: number
+          description: Importance Weight for light.
+          example: 0.5
+        sound_weight:
+          type: number
+          description: Importance Weight for ambient sound.
+          example: 25
+      description: Object where keys are room attribute names and values are their
+        weights.
+    OptimalValues:
+      type: object
+      properties:
+        temperature_opt:
+          oneOf:
+          - type: object
+            properties:
+              min:
+                type: number
+                description: Minimum optimal temperature.
+                example: 20
+              max:
+                type: number
+                description: Maximum optimal temperature.
+                example: 24
+            description: Range of optimal temperature values.
+          - type: number
+            description: Specific optimal temperature value.
+            example: 22
+        co2_opt:
+          oneOf:
+          - type: number
+            description: Specific optimal CO2 level.
+            example: 450
+          - type: object
+            properties:
+              min:
+                type: number
+                description: Minimum optimal CO2 level.
+                example: 400
+              max:
+                type: number
+                description: Maximum optimal CO2 level.
+                example: 600
+            description: Range of optimal CO2 levels.
+        humidity_opt:
+          oneOf:
+          - type: number
+            description: Specific optimal humidity level.
+            example: 0.45
+          - type: object
+            properties:
+              min:
+                type: number
+                description: Minimum optimal humidity level.
+                example: 0.4
+              max:
+                type: number
+                description: Maximum optimal humidity level.
+                example: 0.5
+            description: Range of optimal humidity levels.
+        voc_opt:
+          oneOf:
+          - type: number
+            description: Specific optimal VOC level.
+            example: 0.4
+          - type: object
+            properties:
+              min:
+                type: number
+                description: Minimum optimal VOC level.
+                example: 0.3
+              max:
+                type: number
+                description: Maximum optimal VOC level.
+                example: 0.5
+            description: Range of optimal VOC levels.
+        light_opt:
+          oneOf:
+          - type: number
+            description: Specific optimal light level.
+            example: 500
+          - type: object
+            properties:
+              min:
+                type: number
+                description: Minimum optimal light level.
+                example: 400
+              max:
+                type: number
+                description: Maximum optimal light level.
+                example: 600
+            description: Range of optimal light levels.
+        sound_opt:
+          oneOf:
+          - type: number
+            description: Specific optimal sound level.
+            example: 30
+          - type: object
+            properties:
+              min:
+                type: number
+                description: Minimum optimal sound level.
+                example: 25
+              max:
+                type: number
+                description: Maximum optimal sound level.
+                example: 35
+            description: Range of optimal sound levels.
+      description: "Object specifying optimal values for room attributes, including\
+        \ single numbers or ranges."
+    FlexibilityValue:
+      type: object
+      properties:
+        temperature_flexibility:
+          type: number
+          description: Flexible for temperature.
+          example: 1
+        co2_flexibility:
+          type: number
+          description: Flexible for CO2.
+          example: 0
+        humidity_flexibility:
+          type: number
+          description: Flexible for humidity.
+          example: 2
+        voc_flexibility:
+          type: number
+          description: Flexible for Volatile Organic Compounds (VOC).
+          example: 3
+        light_flexibility:
+          type: number
+          description: Flexible for light.
+          example: 2
+        sound_flexibility:
+          type: number
+          description: Flexible for ambient sound.
+          example: 1
+      description: Object where keys are room attribute names and values are their
+        weights.
+    RoomRequest:
+      type: object
+      properties:
+        dateTimeSlotStart:
+          type: string
+          description: The desired date and time slot for room availability start.
+          format: date-time
+          example: 2024-12-10T14:00:00Z
+        dateTimeSlotEnd:
+          type: string
+          description: The desired date and time slot for room availability dateTimeSlotEnd.
+          format: date-time
+          example: 2024-12-10T15:00:00Z
+        roomSize:
+          $ref: '#/components/schemas/RoomRequest_roomSize'
+        weightedCategories:
+          $ref: '#/components/schemas/WeightedCategory'
+        optimalValues:
+          $ref: '#/components/schemas/OptimalValues'
+        flexibilityValues:
+          $ref: '#/components/schemas/FlexibilityValue'
+        facilityRequirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Facility'
+    inline_response_400:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid request payload.
+    RoomRequest_roomSize:
+      type: object
+      properties:
+        min:
+          type: number
+          description: Minimum optimal sound level.
+          example: 6
+        max:
+          type: number
+          description: Maximum optimal sound level.
+          example: 15
+      description: Range of optimal sound levels.
+
