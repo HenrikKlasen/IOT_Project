@@ -1,5 +1,7 @@
 from swagger_server.controllers.room_recommendation import RoomRecommendation
 import numpy as np
+from pymongo import MongoClient
+
 ABSTRACT_RECOMMENDATION = [
   {
     "roomID": "MSA 4.070",
@@ -16,7 +18,7 @@ ABSTRACT_RECOMMENDATION = [
     "facilities": [
       {
         "name": "Projector",
-        "qunatity": 1
+        "quantity": 1
       }
     ],
     "rank": 1
@@ -109,6 +111,28 @@ def validate_keys(dict1, dict2):
     # Validate that keys1 contains all keys from keys2 and vice versa
     return keys1 == keys2
 
+def getLatestSensorsData(collection):
+    """Gets the latest sensor data for all rooms from the specified document
+
+    Args:
+        collection (MongoDB Collection): sensors collection
+
+    Returns:
+        dict: A dictionary with room names as keys and their latest sensor data as values
+    """
+    pipeline = [
+        {"$match": {"_id": {"$oid": "67682bfaee5c63733df5b3fb"}}},
+        {"$unwind": "$rooms"},
+        {"$unwind": "$rooms.sensors_values"},
+        {"$sort": {"rooms.sensors_values.timestamp": -1}},
+        {"$group": {
+            "_id": "$rooms.name",
+            "latest_sensor_data": {"$first": "$rooms.sensors_values"}
+        }}
+    ]
+    result = collection.aggregate(pipeline)
+    latest_data = {doc["_id"]: doc["latest_sensor_data"] for doc in result}
+    return latest_data
 
 def recommend_rooms_post(body):  # noqa: E501
     """Recommend rooms based on user-provided weights.
@@ -127,16 +151,25 @@ def recommend_rooms_post(body):  # noqa: E501
       error_body = add_error_cause(INVALID_BODY_ERROR,"Inapproriate Request Body")
       return error_body
 
+    client = MongoClient('localhost', 27017)
+    db = client['db']  # Replace with your database name
+    collection = db['sensors_collection']  # Replace with your collection name
+
+    latest_sensor_updates = getLatestSensorsData(collection)
+    client.close()
+
+    if not latest_sensor_updates:
+        return {"detail": "No sensor data available", "status": 404, "title": "Not Found", "type": "about:blank"}
+
     criteria_weights = body["weightedCategories"]
     optimal_values = body["optimalValues"]
     flexibility_values = body["flexibilityValues"]
 
-    stuff = [{k: np.random.random() for k in ["temperature","co2","humidity","voc","light","sound"]} for _ in range(100)]
+    stuff = [{k: data[k] for k in ["temperature","co2","humidity","voc","light","sound"]} for data in latest_sensor_updates.values()]
     room_rec_sys.init_score_functions(optimal_values, flexibility_values)
     room_rec_sys.init_criterion(criteria_weights)
     room_rec_sys.init_alternatives(stuff)
     room_rec_sys.finalise()
     recommendations = room_rec_sys.recommend()
 
-
-    return ABSTRACT_RECOMMENDATION
+    return recommendations
