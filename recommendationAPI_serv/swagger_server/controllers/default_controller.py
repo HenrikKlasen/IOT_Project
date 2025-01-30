@@ -3,6 +3,7 @@ import numpy as np
 from flask_pymongo import MongoClient
 from coapthon.client.helperclient import HelperClient
 import json
+from swagger_server.controllers.globaldata import room_data
 from threading import Thread
 
 ABSTRACT_RECOMMENDATION = [
@@ -78,7 +79,6 @@ INVALID_BODY_ERROR = {
 }
 
 room_rec_sys = RoomRecommendation()
-room_data = [None, None, None]
 def add_error_cause(error, addtional_info):
   error["additional_info"] = addtional_info
   return error
@@ -113,78 +113,6 @@ def validate_keys(dict1, dict2):
 
     # Validate that keys1 contains all keys from keys2 and vice versa
     return keys1 == keys2
-    
-def start_listener_R1():
-    host = "127.0.0.1"
-    port = 5683
-    path = "Room1"
-
-
-    client = HelperClient(server=(host, port))
-    response = client.observe(path, callback1)
-    try:
-        while True:
-            pass
-    except KeyboardInterrupt:
-        client.cancel_observing(response, True)
-        client.stop()
-    
-
-def callback1(response):
-    print("Notification received:")
-    response = json.loads(response.payload.encode('utf-8'))
-    response = json.loads(response['data'])
-    response = json.loads(response['data'])
-    room_data[0] = response
-    print(response)
-
-def start_listener_R2():
-    host = "127.0.0.1"
-    port = 5683
-    path = "Room2"
-
-
-    client = HelperClient(server=(host, port))
-    response = client.observe(path, callback1)
-    try:
-        while True:
-            pass
-    except KeyboardInterrupt:
-        client.cancel_observing(response, True)
-        client.stop()
-    
-
-def callback2(response):
-    print("Notification received:")
-    response = json.loads(response.payload.encode('utf-8'))
-    response = json.loads(response['data'])
-    response = json.loads(response['data'])
-    room_data[1] = response
-    print(response)
-
-def start_listener_R3():
-    host = "127.0.0.1"
-    port = 5683
-    path = "Room1"
-
-
-    client = HelperClient(server=(host, port))
-    response = client.observe(path, callback1)
-    try:
-        while True:
-            pass
-    except KeyboardInterrupt:
-        client.cancel_observing(response, True)
-        client.stop()
-    
-
-def callback3(response):
-    print("Notification received:")
-    response = json.loads(response.payload.encode('utf-8'))
-    response = json.loads(response['data'])
-    response = json.loads(response['data'])
-    room_data[0] = response
-    print(response)
 
 
 def recommend_rooms_post(body):  # noqa: E501
@@ -197,21 +125,13 @@ def recommend_rooms_post(body):  # noqa: E501
 
     :rtype: List[Room]
     """
-
     approriate_body = validate_keys(body,ABSTRACT_BODY)
     
     if not approriate_body:
       error_body = add_error_cause(INVALID_BODY_ERROR,"Inapproriate Request Body")
       return error_body
-    t1 = Thread(target=start_listener_R1, args=(room_data,), name="Observer_Room1")
-    t2 = Thread(target=start_listener_R2, args=(room_data,), name="Observer_Room2")
-    t3 = Thread(target=start_listener_R3, args=(room_data,), name="Observer_Room3")
-    t1.start()
-    t2.start()
-    t3.start()
-    
-    start_listener_R1()
-    if not room_data:
+    print(room_data)
+    if not room_data[0] or not room_data[1] or not room_data[2]:
         return {"detail": "No sensor data available", "status": 404, "title": "Not Found", "type": "about:blank"}
     
     criteria_weights = body["weightedCategories"]

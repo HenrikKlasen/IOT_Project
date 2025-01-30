@@ -7,3 +7,5 @@ six
 pymongo
 flask_pymongo
 flask_cors
+coapthon3
+aiocoap
