@@ -138,10 +138,9 @@ def recommend_rooms_post(body):  # noqa: E501
     optimal_values = body["optimalValues"]
     flexibility_values = body["flexibilityValues"]
 
-    stuff = [{k: data[k] for k in ["temperature","co2","humidity","voc","light","sound"]} for data in room_data.values()]
     room_rec_sys.init_score_functions(optimal_values, flexibility_values)
     room_rec_sys.init_criterion(criteria_weights)
-    room_rec_sys.init_alternatives(stuff)
+    room_rec_sys.init_alternatives(room_data)
     room_rec_sys.finalise()
     recommendations = room_rec_sys.recommend()
 

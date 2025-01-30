@@ -26,5 +26,7 @@ class SensorNode:
         if self.room_data[self.index]['data'] != 'Sensor data resource':
             self.room_data[self.index] = json.loads(self.room_data[self.index]['data'])
             self.room_data[self.index] = json.loads(self.room_data[self.index]['data'])
+            self.room_data[self.index] = self.room_data[self.index]['sensors_values']
+
             print(self.room_data[self.index])
             print(self.room_data)

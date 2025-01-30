@@ -1,5 +1,5 @@
 import json
-def parse_to_json_dict(timestamp: str, roomID: int, temp: float = None, humidity: float = None, lum: float = None, noiseLv: float = None, co2: float = None, airPM2_5: float = None, airPM10: float = None, voc: float = None) -> dict:
+def parse_to_json_dict(timestamp: str, roomID: int, temp: float = 0, humidity: float = 0, lum: float = 0, noiseLv: float = 0, co2: float = 0, airPM2_5: float = 0, airPM10: float = 0, voc: float = 0) -> dict:
     """Parses arduino sensors data to json dictionary
     All parameters are set to None for data consistency in cases where some data is not available through the sensors
     
@@ -26,7 +26,7 @@ def parse_to_json_dict(timestamp: str, roomID: int, temp: float = None, humidity
             "humidity": humidity,
             "light_intensity": lum,
             "sound_level": noiseLv,
-            "co2_level": co2,
+            "co2": co2,
             "PM2.5": airPM2_5,
             "PM10": airPM10,
             "VOC_level": voc
