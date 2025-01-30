@@ -1,6 +1,7 @@
 from swagger_server.controllers.room_recommendation import RoomRecommendation
 import numpy as np
-from pymongo import MongoClient
+from flask_pymongo import MongoClient
+import requests
 
 ABSTRACT_RECOMMENDATION = [
   {
@@ -111,28 +112,29 @@ def validate_keys(dict1, dict2):
     # Validate that keys1 contains all keys from keys2 and vice versa
     return keys1 == keys2
 
-def getLatestSensorsData(collection):
-    """Gets the latest sensor data for all rooms from the specified document
+def fetch_sensor_data(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        raise Exception(f"Failed to fetch sensor data: {e}")
 
-    Args:
-        collection (MongoDB Collection): sensors collection
-
-    Returns:
-        dict: A dictionary with room names as keys and their latest sensor data as values
-    """
-    pipeline = [
-        {"$match": {"_id": {"$oid": "67682bfaee5c63733df5b3fb"}}},
-        {"$unwind": "$rooms"},
-        {"$unwind": "$rooms.sensors_values"},
-        {"$sort": {"rooms.sensors_values.timestamp": -1}},
-        {"$group": {
-            "_id": "$rooms.name",
-            "latest_sensor_data": {"$first": "$rooms.sensors_values"}
-        }}
-    ]
-    result = collection.aggregate(pipeline)
-    latest_data = {doc["_id"]: doc["latest_sensor_data"] for doc in result}
-    return latest_data
+def get_latest_sensor_data(sensor_data):
+    latest_data_points = []
+    for room in sensor_data.get("rooms", []):
+        if room.get("sensors_values"):
+            latest_data = max(room["sensors_values"], key=lambda x: datetime.fromisoformat(x["timestamp"]))
+            latest_data_points.append({
+                "room": room["name"],
+                "latest_data": latest_data
+            })
+    return latest_data_points
+def getAllLatestDataPoints(collection):
+    document = collection.find_one({"_id": {"$oid": "67682bfaee5c63733df5b3fb"}})
+    if not document or "rooms" not in document:
+        return []
+    
 
 def recommend_rooms_post(body):  # noqa: E501
     """Recommend rooms based on user-provided weights.
@@ -150,15 +152,12 @@ def recommend_rooms_post(body):  # noqa: E501
     if not approriate_body:
       error_body = add_error_cause(INVALID_BODY_ERROR,"Inapproriate Request Body")
       return error_body
-
-    client = MongoClient('localhost', 27017)
-    db = client['db']  # Replace with your database name
-    collection = db['sensors_collection']  # Replace with your collection name
-
-    latest_sensor_updates = getLatestSensorsData(collection)
-    client.close()
-
-    if not latest_sensor_updates:
+    url = "http://localhost:5000/api/sensors"
+    sensor_data = fetch_sensor_data(url)
+    latestDataPoints = get_latest_sensor_data(sensor_data)
+    for data_point in latestDataPoints:
+        print(data_point)
+    if not latestDataPoints:
         return {"detail": "No sensor data available", "status": 404, "title": "Not Found", "type": "about:blank"}
 
     criteria_weights = body["weightedCategories"]

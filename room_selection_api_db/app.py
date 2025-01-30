@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_pymongo import PyMongo
+from flask_cors import CORS
 import os
 #from flasgger import Swagger
 from setup_external_db import setupExternalDB
@@ -20,6 +21,7 @@ setupCentralDB(mongo, os.getcwd()+"/room_selection_api_db/Project_sensor_data/se
 #setupCalendar()
 
 if __name__ == '__main__':
+    CORS(app.app)
     app.run(debug=True, host='0.0.0.0')
 
 
