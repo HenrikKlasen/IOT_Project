@@ -1,7 +1,9 @@
 from swagger_server.controllers.room_recommendation import RoomRecommendation
 import numpy as np
 from flask_pymongo import MongoClient
-import requests
+from coapthon.client.helperclient import HelperClient
+import json
+from threading import Thread
 
 ABSTRACT_RECOMMENDATION = [
   {
@@ -76,7 +78,7 @@ INVALID_BODY_ERROR = {
 }
 
 room_rec_sys = RoomRecommendation()
-
+room_data = [None, None, None]
 def add_error_cause(error, addtional_info):
   error["additional_info"] = addtional_info
   return error
@@ -111,30 +113,79 @@ def validate_keys(dict1, dict2):
 
     # Validate that keys1 contains all keys from keys2 and vice versa
     return keys1 == keys2
-
-def fetch_sensor_data(url):
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        raise Exception(f"Failed to fetch sensor data: {e}")
-
-def get_latest_sensor_data(sensor_data):
-    latest_data_points = []
-    for room in sensor_data.get("rooms", []):
-        if room.get("sensors_values"):
-            latest_data = max(room["sensors_values"], key=lambda x: datetime.fromisoformat(x["timestamp"]))
-            latest_data_points.append({
-                "room": room["name"],
-                "latest_data": latest_data
-            })
-    return latest_data_points
-def getAllLatestDataPoints(collection):
-    document = collection.find_one({"_id": {"$oid": "67682bfaee5c63733df5b3fb"}})
-    if not document or "rooms" not in document:
-        return []
     
+def start_listener_R1():
+    host = "127.0.0.1"
+    port = 5683
+    path = "Room1"
+
+
+    client = HelperClient(server=(host, port))
+    response = client.observe(path, callback1)
+    try:
+        while True:
+            pass
+    except KeyboardInterrupt:
+        client.cancel_observing(response, True)
+        client.stop()
+    
+
+def callback1(response):
+    print("Notification received:")
+    response = json.loads(response.payload.encode('utf-8'))
+    response = json.loads(response['data'])
+    response = json.loads(response['data'])
+    room_data[0] = response
+    print(response)
+
+def start_listener_R2():
+    host = "127.0.0.1"
+    port = 5683
+    path = "Room2"
+
+
+    client = HelperClient(server=(host, port))
+    response = client.observe(path, callback1)
+    try:
+        while True:
+            pass
+    except KeyboardInterrupt:
+        client.cancel_observing(response, True)
+        client.stop()
+    
+
+def callback2(response):
+    print("Notification received:")
+    response = json.loads(response.payload.encode('utf-8'))
+    response = json.loads(response['data'])
+    response = json.loads(response['data'])
+    room_data[1] = response
+    print(response)
+
+def start_listener_R3():
+    host = "127.0.0.1"
+    port = 5683
+    path = "Room1"
+
+
+    client = HelperClient(server=(host, port))
+    response = client.observe(path, callback1)
+    try:
+        while True:
+            pass
+    except KeyboardInterrupt:
+        client.cancel_observing(response, True)
+        client.stop()
+    
+
+def callback3(response):
+    print("Notification received:")
+    response = json.loads(response.payload.encode('utf-8'))
+    response = json.loads(response['data'])
+    response = json.loads(response['data'])
+    room_data[0] = response
+    print(response)
+
 
 def recommend_rooms_post(body):  # noqa: E501
     """Recommend rooms based on user-provided weights.
@@ -152,19 +203,22 @@ def recommend_rooms_post(body):  # noqa: E501
     if not approriate_body:
       error_body = add_error_cause(INVALID_BODY_ERROR,"Inapproriate Request Body")
       return error_body
-    url = "http://localhost:5000/api/sensors"
-    sensor_data = fetch_sensor_data(url)
-    latestDataPoints = get_latest_sensor_data(sensor_data)
-    for data_point in latestDataPoints:
-        print(data_point)
-    if not latestDataPoints:
+    t1 = Thread(target=start_listener_R1, args=(room_data,), name="Observer_Room1")
+    t2 = Thread(target=start_listener_R2, args=(room_data,), name="Observer_Room2")
+    t3 = Thread(target=start_listener_R3, args=(room_data,), name="Observer_Room3")
+    t1.start()
+    t2.start()
+    t3.start()
+    
+    start_listener_R1()
+    if not room_data:
         return {"detail": "No sensor data available", "status": 404, "title": "Not Found", "type": "about:blank"}
-
+    
     criteria_weights = body["weightedCategories"]
     optimal_values = body["optimalValues"]
     flexibility_values = body["flexibilityValues"]
 
-    stuff = [{k: data[k] for k in ["temperature","co2","humidity","voc","light","sound"]} for data in latest_sensor_updates.values()]
+    stuff = [{k: data[k] for k in ["temperature","co2","humidity","voc","light","sound"]} for data in room_data.values()]
     room_rec_sys.init_score_functions(optimal_values, flexibility_values)
     room_rec_sys.init_criterion(criteria_weights)
     room_rec_sys.init_alternatives(stuff)
