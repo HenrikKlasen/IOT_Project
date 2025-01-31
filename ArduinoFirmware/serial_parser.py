@@ -24,12 +24,12 @@ def parse_to_json_dict(timestamp: str, roomID: int, temp: float = 0, humidity: f
         "sensors_values": {
             "temperature": temp,
             "humidity": humidity,
-            "light_intensity": lum,
-            "sound_level": noiseLv,
+            "light": lum,
+            "sound": noiseLv,
             "co2": co2,
             "PM2.5": airPM2_5,
             "PM10": airPM10,
-            "VOC_level": voc
+            "voc": voc
         }
     }
     return json_data

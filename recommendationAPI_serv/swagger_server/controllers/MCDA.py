@@ -95,6 +95,8 @@ class Alternatives(Abstract_AHP_Container):
     
     
     def comparison_matrix(self):
+        print(self.depth)
+        print(self.criteria)
         for d in range(self.depth):
             curr_criterion = self.criteria[d]
             score_f = curr_criterion.get_score_func()
@@ -103,8 +105,8 @@ class Alternatives(Abstract_AHP_Container):
                 for j in range(i,self.size):
                     score1 = score_f(self.alternatives[i][criterion_name])
                     score2 = score_f(self.alternatives[j][criterion_name])
-                    self.container[d,i,j] =  score1 / score2
-                    self.container[d,j,i] =  score2 / score1
+                    self.container[d,i,j] =  (score1 +1) / (score2+1)
+                    self.container[d,j,i] =  (score2 +1)/ (score1+1)
         
     
     def set_scoring_function(self,f):
