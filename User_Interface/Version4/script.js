@@ -334,12 +334,12 @@ function gatherPreferences() {
        },
 
        weightedCategories : {
-          temperature_weight : parseFloat(document.getElementById("temperatureSlider").value)/10,
-          co2_weight : parseFloat(document.getElementById("airQualitySlider").value)/10,
-          humidity_weight : parseFloat(document.getElementById("humiditySlider").value)/10,
-          voc_weight : parseFloat(document.getElementById("vocSlider").value)/10,
-          light_weight : parseFloat(document.getElementById("lightingSlider").value)/10,
-          sound_weight : parseFloat(document.getElementById("soundSlider").value)/10 
+          temperature_weight : getTempWeight(),
+          co2_weight : getCO2Weight(),
+          humidity_weight : getHumidityWeight(),
+          voc_weight : getVOCWeight(),
+          light_weight : getLightWeight(),
+          sound_weight : getSoundWeight()
       },
 
       optimalValues : {
@@ -447,30 +447,41 @@ function getHumidityOpt() {
 }
 
 function getLightOpt() {
-   const lightingValue = parseInt(document.getElementById("lightingSlider").value);
-   const lightingRanges = [
-       100, // Slider value 0 (<17°C)
-       200,   // Slider value 1 (17-19°C)
-       300,   // Slider value 2 (19-21°C)
-       400,   // Slider value 3 (21-23°C)
-       500    // Slider value 4 (>23°C)
-   ];
-   
-   return lightingRanges[lightingValue];
+   return parseInt(document.getElementById("lightingSlider").value);
 }
 
 function getSoundOpt() {
    const soundValue = parseInt(document.getElementById("soundSlider").value);
    const soundRanges = [
-       100, // Slider value 0 (<17°C)
-       200,   // Slider value 1 (17-19°C)
-       300,   // Slider value 2 (19-21°C)
-       400,   // Slider value 3 (21-23°C)
-       500    // Slider value 4 (>23°C)
+       200, // Slider value 0 (<17°C)
+       400,   // Slider value 1 (17-19°C)
+       600,   // Slider value 2 (19-21°C)
+       800,   // Slider value 3 (21-23°C)
+       1000    // Slider value 4 (>23°C)
    ];
    
    return soundRanges[soundValue];
 }
+
+function getTempWeight() {
+    return parseFloat(document.getElementById("temperatureWeight").value);
+}
+function getCO2Weight() {
+    return parseFloat(document.getElementById("airQualityWeight").value);
+}
+function getHumidityWeight() {
+    return parseFloat(document.getElementById("humidityWeight").value);
+}
+function getVOCWeight() {
+    return parseFloat(document.getElementById("vocWeight").value);
+}
+function getLightWeight() {
+    return parseFloat(document.getElementById("lightingWeight").value);
+}
+function getSoundWeight() {
+    return parseFloat(document.getElementById("soundWeight").value);
+}
+
 
 // Display API Response
 function displayApiResponse(data) {

@@ -62,8 +62,8 @@ class Criteria(Abstract_AHP_Container):
                 for j in range(i,self.size):
                     score1 = self.criteria[i].perceived_importance
                     score2 = self.criteria[j].perceived_importance
-                    self.container[d,i,j] =  score1 / score2
-                    self.container[d,j,i] =  score2 / score1
+                    self.container[d,i,j] =  (score1 +1) / (score2+1)
+                    self.container[d,j,i] =  (score2 +1)/ (score1+1)
                     
     def normalise_priorities(self):
         priorities = [criterion.get_priority() for criterion in self.criteria]
@@ -97,7 +97,7 @@ class Alternatives(Abstract_AHP_Container):
     def comparison_matrix(self):
         print(self.depth)
         print(self.criteria)
-        for d in range(self.depth):
+        for d in range(len(self.criteria)):
             curr_criterion = self.criteria[d]
             score_f = curr_criterion.get_score_func()
             criterion_name = curr_criterion.get_name()

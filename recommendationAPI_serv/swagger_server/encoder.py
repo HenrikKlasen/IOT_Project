@@ -1,5 +1,6 @@
 from connexion.apps.flask_app import FlaskJSONEncoder
 import six
+import numpy as np
 
 from swagger_server.models.base_model_ import Model
 
@@ -17,4 +18,6 @@ class JSONEncoder(FlaskJSONEncoder):
                 attr = o.attribute_map[attr]
                 dikt[attr] = value
             return dikt
-        return FlaskJSONEncoder.default(self, o)
+        elif isinstance(o, np.ndarray):
+            return o.tolist()
+        return super().default(o)
