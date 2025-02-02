@@ -1,0 +1,214 @@
+/* styles.css */
+
+/* Global Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+  background: #fff;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Header Styles */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 10px;
+  transition: border-bottom 0.3s ease;
+}
+
+header h1 {
+  color: #007bff;
+  font-size: 1.8rem;
+}
+
+.toggle-buttons button {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-left: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-buttons button:hover {
+  background: #0056b3;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+  background-color: #121212;
+  color: #f4f4f4;
+}
+
+body.dark-mode .container {
+  background: #1e1e1e;
+  box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode header {
+  border-bottom: 2px solid #4c84ff;
+}
+
+body.dark-mode header h1 {
+  color: #4c84ff;
+}
+
+body.dark-mode .toggle-buttons button {
+  background: #4c84ff;
+  color: #fff;
+}
+
+body.dark-mode .toggle-buttons button:hover {
+  background: #3356b3;
+}
+
+body.dark-mode section {
+  border: 1px solid #444;
+  background-color: #2a2a2a;
+}
+
+body.dark-mode section h2 {
+  color: #ddd;
+}
+
+/* Section Styles */
+section {
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #444;
+  border-left: 4px solid #007bff;
+  padding-left: 10px;
+}
+
+body.dark-mode section h2 {
+  color: #ddd;
+  border-left: 4px solid #4c84ff;
+}
+
+fieldset {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+
+body.dark-mode fieldset {
+  border: 1px solid #444;
+}
+
+legend {
+  font-weight: bold;
+  color: #007bff;
+}
+
+body.dark-mode legend {
+  color: #4c84ff;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+input[type="number"],
+input[type="date"],
+input[type="time"] {
+  padding: 8px;
+  font-size: 1rem;
+  width: calc(100% - 20px);
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+body.dark-mode input[type="number"],
+body.dark-mode input[type="date"],
+body.dark-mode input[type="time"] {
+  border: 1px solid #555;
+  background-color: #333;
+  color: #fff;
+}
+
+textarea {
+  width: calc(100% - 20px);
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background: #f9f9f9;
+  color: #555;
+}
+
+body.dark-mode textarea {
+  background: #333;
+  color: #ddd;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
+}
+
+.actions button {
+  background: #28a745;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+body.dark-mode .actions button {
+  background: #5cb85c;
+}
+
+.actions button[type="reset"] {
+  background: #dc3545;
+}
+
+body.dark-mode .actions button[type="reset"] {
+  background: #e74c3c;
+}
+
+.actions button:hover {
+  opacity: 0.9;
+}
+
+/* Utility Classes */
+.hidden {
+  display: none;
+}
+
+.text-center {
+  text-align: center;
+}

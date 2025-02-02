@@ -1,0 +1,39 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+      
+
+  # flask-app:
+  #   build: .
+  #   container_name: flask-app
+  #   ports:
+  #     - "5000:5000"
+  #   depends_on:
+  #     - mongo
+  #   environment:
+  #     - FLASK_ENV=development
+  #     - MONGO_URI=mongodb://mongo:27017/rooms_db
+  #   volumes:
+  #     - .:/app
+
+  # swagger-ui:
+  #   image: swaggerapi/swagger-ui
+  #   container_name: swagger-ui
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - SWAGGER_JSON=/app/swagger.json
+  #   volumes:
+  #     - ./swagger.json:/app/swagger.json
+  #   depends_on:
+  #     - flask-app
+
+volumes:
+  mongo-data:
+
+
