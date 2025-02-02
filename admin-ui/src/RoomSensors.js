@@ -1,14 +1,12 @@
 import React from 'react';
 
 const RoomSensors = ({ sensorData, isRoomAvailable }) => {
-  const twelveHoursAgo = Date.now() - 12 * 60 * 60 * 1000;
-
   const getStatus = (sensorValues, sensorName) => {
     let consecutiveMisses = 0;
     let missedOnce = false;
-    for (let i = sensorValues.length - 1; i >= 0; i--) {
+    for (let i = 0; i <= sensorValues.length - 1; i++){
       const sensor = sensorValues[i];
-      if (sensor[sensorName] == null || sensor[sensorName] === 'none') {
+      if (sensor[sensorName] == null || sensor[sensorName] === 'none' || sensor[sensorName] === 0) {
         consecutiveMisses++;
         if (consecutiveMisses >= 3) {
           return { status: 'red', misses: consecutiveMisses };
@@ -17,7 +15,7 @@ const RoomSensors = ({ sensorData, isRoomAvailable }) => {
         consecutiveMisses = 0;
       }
     }
-
+    
     if (consecutiveMisses > 0) {
       missedOnce = true;
     }

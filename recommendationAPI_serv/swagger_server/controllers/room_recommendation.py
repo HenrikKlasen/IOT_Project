@@ -45,7 +45,7 @@ def sound_score(x,opt_small=0.35,opt_big=0.35,flexibility=None):
         return 1
     return np.maximum(-(1/35)*x+2,0)
 
-CRITERIA_NAMES = ["temperature","co2","humidity","voc","light","sound"]
+CRITERIA_NAMES = ["temperature","co2_level","humidity","VOC_level","light_intensity","sound_level"]
 CRITERIA_FUNCTIONS = [temperature_score, co2_score, humidity_score, voc_score, light_score, sound_score]
 
 class RoomRecommendation:

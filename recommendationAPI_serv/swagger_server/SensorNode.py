@@ -1,7 +1,7 @@
 from coapthon.client.helperclient import HelperClient
 from swagger_server.controllers.globaldata import room_data
 import json
-
+from threading import Thread
 class SensorNode:
     def __init__(self, room_name, room_data, index):
         self.room_name = room_name
@@ -30,3 +30,4 @@ class SensorNode:
 
             print(self.room_data[self.index])
             print(self.room_data)
+

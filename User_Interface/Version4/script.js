@@ -180,7 +180,7 @@ function updateLabels() {
 
     // Update Lighting
     const lightingValue = preferencesConfig.lighting.slider.value;
-    preferencesConfig.lighting.label.innerHTML = preferencesConfig.lighting.options[lightingValue];
+    preferencesConfig.lighting.label.innerHTML = preferencesConfig.lighting.options[lightingValue/2];
 
     // Update Flexibility Labels
     updateFlexibilityLabels();
@@ -255,7 +255,7 @@ loginForm.addEventListener('submit', async function(event) {
     const password = document.getElementById('password').value;
 
     // Bypass Logic for Testing
-    if (username === ' ' && password === ' ') { // Replace with desired credentials // username === 'User' && password === 'password'
+    if (username === 'User' && password === 'password') { // Replace with desired credentials // username === 'User' && password === 'password'
         localStorage.setItem('token', 'development-token'); // Fake token for local testing
         loginScreen.style.display = 'none'; // Hide login screen
         app.classList.remove('hidden'); // Show app screen
@@ -263,26 +263,26 @@ loginForm.addEventListener('submit', async function(event) {
     }
 
     // Original API Call (commented out or retained for later use)
-    try {
-        const response = await fetch(`${API_BASE_URL}/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username, password }),
-        });
-
-        if (!response.ok) {
-            throw new Error('Invalid username or password.');
-        }
-
-        const data = await response.json();
-        localStorage.setItem('token', data.token); // Store token in local storage
-        loginScreen.style.display = 'none'; // Hide login screen
-        app.classList.remove('hidden'); // Show app screen
-    } catch (error) {
-        alert(error.message);
-    }
+    //try {
+    //    const response = await fetch(`${API_BASE_URL}/login`, {
+    //        method: 'POST',
+    //        headers: {
+    //            'Content-Type': 'application/json',
+    //        },
+    //        body: JSON.stringify({ username, password }),
+    //    });
+//
+    //    if (!response.ok) {
+    //        throw new Error('Invalid username or password.');
+    //    }
+//
+    //    const data = await response.json();
+    //    localStorage.setItem('token', data.token); // Store token in local storage
+    //    loginScreen.style.display = 'none'; // Hide login screen
+    //    app.classList.remove('hidden'); // Show app screen
+    //} catch (error) {
+    //    alert(error.message);
+    //}
 });
 
 // Handle Preferences Form Submission
@@ -300,14 +300,13 @@ document.getElementById('preferenceForm').addEventListener('submit', async funct
         const response = await fetch(PREFERENCES_URL, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify(userPreferences),
         });
-        displayApiResponse(response);
+        const responseData = await response.json();
+        console.log(responseData);
+        displayApiResponse(responseData);
     }
     catch (error) {
         alert(error.message);
@@ -486,42 +485,26 @@ function getSoundWeight() {
 // Display API Response
 function displayApiResponse(data) {
    apiResponseDiv.innerHTML = ''; // Clear previous content
-
+    console.log(data);
    if (!data.length) {
        apiResponseDiv.innerText = 'No rooms available.';
        return;
    }
-
-   data.forEach(room => {
-       const roomDiv = createRoomInfoDiv(room);
-       apiResponseDiv.appendChild(roomDiv);
-   });
+   for(i in Object.keys(data)) {
+         const roomProb = data[i];
+         const roomDiv = createRoomInfoDiv(i, roomProb);
+         apiResponseDiv.appendChild(roomDiv);
+   }
 }
 
 // Create HTML structure for room information
-function createRoomInfoDiv(room) {
+function createRoomInfoDiv(roomID, room) {
    const roomDiv = document.createElement('div');
    roomDiv.classList.add('room-info');
-
    roomDiv.innerHTML = `
      <div class='room-header'>
-         <h3><span class='rank-badge'>Rank ${room.rank}</span> Room ID:${room.roomID}</h3>
-         <p class='time-slot'>${new Date(room.dateTimeSlotStart).toLocaleString()} - ${new Date(room.dateTimeSlotEnd).toLocaleString()}</p>
-     </div>
-     <div class='room-metrics'>
-         <h3>Room Metrics</h3>
-         <ul>
-             <li><span class='icon'>&#127777;</span> Temperature:${room.roomMetrics.temperature}°C</li>
-             <li><span class='icon'>&#127788;</span> CO2 Level:${room.roomMetrics.co2} ppm</li>
-             <li><span class='icon'>&#128167;</span> Humidity:${(room.roomMetrics.humidity * 100).toFixed(1)}%</li>
-             <li><span class='icon'>&#127788;</span> VOC Level:${(room.roomMetrics.voc * 100).toFixed(1)} ppm</li>
-             <li><span class='icon'>&#128161;</span> Light Level:${room.roomMetrics.light} lux</li>
-             <li><span class='icon'>&#128266;</span> Sound Level:${room.roomMetrics.sound} dB</li>
-         </ul>
-     </div>
-     <div class='room-facilities'>
-         <h3>Facilities Available</h3>
-         <ul>${room.facilities.map(facility => `<li><span class='icon'>&#128187;</span>${facility.name}: Quantity ${facility.quantity}</li>`).join('')}</ul></ul></ul></ul></ul></ul></ul></ul></ul></ul></ul></ul></ul></ul></ul></ul></ul></ul></ul></ul></ul>`;
+         <h3><span class='rank-badge'>Match ${room * 100}%</span> Room ID:${roomID}</h3>
+     </div>`;
     
    return roomDiv;
 }

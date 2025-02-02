@@ -124,6 +124,7 @@ def mergeInitDataInCollection(collection, folderPath):
         print("Data merging and insertion into db completed")
 
 def mergeArduinoDataInCollection(collection, arduinoData):
+        print(arduinoData)
         roomId = arduinoData['name']
         timestamp = arduinoData['timestamp']
         sensorsValues = arduinoData['sensors_values']
